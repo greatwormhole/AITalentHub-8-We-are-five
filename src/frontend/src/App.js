@@ -5,28 +5,33 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (userInput.trim() !== '') {
       const newMessages = [...messages, { sender: 'user', text: userInput }];
       setMessages(newMessages);
       setUserInput('');
 
-      // Simulate a bot response
-      setTimeout(() => {
-        const botResponse = getBotResponse(userInput);
-        setMessages([...newMessages, { sender: 'bot', text: botResponse }]);
-      }, 1000);
-    }
-  };
+      // Отправка сообщения на бэкенд
+      const response = await fetch("http://localhost:8000/message/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({body: userInput }),
+      });
 
-  const getBotResponse = (input) => {
-    return 'Я не знаю ответа на данный вопрос.';
+      const data = await response.json();
+      const botResponse = data.body;
+
+      // Добавление ответа бота в чат
+      setMessages([...newMessages, { sender: 'bot', text: botResponse }]);
+    }
   };
 
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h2>Чатбот</h2>
+        <h2>Чат-бот</h2>
       </div>
       <div className="chat-box">
         {messages.map((message, index) => (
