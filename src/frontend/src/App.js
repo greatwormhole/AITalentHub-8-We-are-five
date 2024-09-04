@@ -1,18 +1,21 @@
 import React, { useState } from 'react';
 import './App.css';
 
+const backendURI = "http://localhost:8000"
+
 function App() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
 
   const handleSendMessage = async () => {
+    const endpoint = "message"
     if (userInput.trim() !== '') {
       const newMessages = [...messages, { sender: 'user', text: userInput }];
       setMessages(newMessages);
       setUserInput('');
 
       // Отправка сообщения на бэкенд
-      const response = await fetch("http://0.0.0.0:8000/message/", {
+      const response = await fetch(backendURI + "/" + endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
