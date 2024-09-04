@@ -1,9 +1,11 @@
 FROM node:16 AS build
 WORKDIR /app
+ARG HOST
+ARG PORT
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN HOST=0.0.0.0 npm run build
+RUN HOST=${HOST} PORT=${PORT} npm run build
 
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
