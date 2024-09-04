@@ -3,12 +3,12 @@ import requests
 
 from settings import server_settings
 
-class TestMsgEndpoint(unittest.TestCase):
+class TestMessageEndpoint(unittest.TestCase):
 
-    url = 'message'
+    endpoint = 'message'
     
     def setUp(self):
-        self.url = 'http://' + server_settings.host + ':' + str(server_settings.port) + '/' + self.url
+        self.url = 'http://' + server_settings.host + ':' + str(server_settings.port) + '/' + self.endpoint
         self.headers = {"Content-Type": "application/json"}
         self.payload = {
             "body": "Dummy",
@@ -17,3 +17,4 @@ class TestMsgEndpoint(unittest.TestCase):
     def test_post_msg(self):
         response = requests.post(self.url, json=self.payload, headers=self.headers)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), self.payload)

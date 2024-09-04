@@ -2,6 +2,7 @@ from uvicorn import Config
 
 server_settings = Config(
     app='app:app',
-    host='localhost',
-    port=5000,
+    host='0.0.0.0',
+    port=8000,
+    reload=True,
 )
