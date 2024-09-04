@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 
+from models import Message
+
 app = FastAPI()
 
 @app.post(
-    '/message',
-    
+    '/message/',
 )
-async def handle_message():
-    pass
+async def handle_message(msg: Message):
+    return {'msg': msg}
