@@ -1,11 +1,5 @@
 # Чат-бот AI Talent Hub
 
-## Содержание
-
-- [Использованные технологии](#technologies-used)
-- [Установка](#installation)
-- [Использование](#usage)
-
 ## Использованные технологии
 
 - **Front-end:**
@@ -37,3 +31,10 @@ To set up the project locally, follow these steps:
     ```bash
     bash lauch.sh
     ```
+
+## Использование
+
+<div style="text-align: center;">
+  <img src="./media/frontend.png" alt="Мое изображение" style="height: 400px; width: 600px">
+  <img src="./media/backend_docs.png" alt="Мое изображение" style="height: 400px; width: 800px">
+</div>
