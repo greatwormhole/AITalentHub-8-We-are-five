@@ -14,7 +14,7 @@ app.add_middleware(
 )
 
 @app.post(
-    '/message/',
+    '/api/message/',
 )
 async def handle_message(msg: Message):
     return msg
