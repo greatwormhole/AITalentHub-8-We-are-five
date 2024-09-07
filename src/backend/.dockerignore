@@ -6,6 +6,5 @@ venv
 .venv
 Dockerfile
 docker-compose.yml
-env
-tests
-run_tests.py
+env/
+all-mpnet-base-v2/

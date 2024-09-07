@@ -64,3 +64,6 @@ archive.zip
 
 # macOS
 .DS_Store
+
+# Модель
+all-mpnet-base-v2
