@@ -14,25 +14,27 @@ function Chatbot() {
   const api = config["apiEndpointsMap"];
   const backendURI = config['backendURI'];
 
-  useEffect(() => {
-    // Асинхронная функция для загрузки категорий
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(backendURI + api['getCategories']); // Замените на реальный эндпоинт
-        if (!response.ok) {
-          throw new Error('Ошибка при загрузке категорий');
-        }
-        const data = await response.json();
-        setCategories(data.body); // Предполагается, что API возвращает массив категорий
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   // Асинхронная функция для загрузки категорий
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:8000" + api['getCategories']); // Замените на реальный эндпоинт
+  //       if (!response.ok) {
+  //         throw new Error('Ошибка при загрузке категорий');
+  //       }
+  //       const data = await response.json();
+  //       setCategories(data.body); // Предполагается, что API возвращает массив категорий
+  //       setLoading(false);
+  //     } catch (err) {
+  //       setError(err.message);
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchCategories();
-  }, [backendURI, api]);
+  //   fetchCategories();
+  // }, [backendURI, api]);
+
+  setCategories(['ЛК', 'поддержка', 'табель', 'отпуск', 'удаленная работа', 'увольнение', 'моя карьера', 'БиР', 'Другое'])
 
   const handleSendMessage = async () => {
     if (!selectedCategory) {

@@ -11,7 +11,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        f'http://{os.environ['FRONTEND_HOST']}:{os.environ['FRONTEND_PORT']}'
+        f'http://{os.environ['FRONTEND_HOST']}:{os.environ['FRONTEND_PORT']}',
+        'http://localhost:3000'
     ],
     allow_credentials=True,
     allow_methods=["*"],
