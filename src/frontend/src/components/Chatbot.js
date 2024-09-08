@@ -63,7 +63,7 @@ function Chatbot() {
     setMessages(newMessages);
 
     if (feedback === 'Нет') {
-      setMessages([...newMessages, { sender: 'bot', text: 'Извините, что ответ вас не устроил' }]);
+      setMessages([...newMessages, { sender: 'bot', text: 'Извините, что ответ Вас не устроил' }]);
     }
 
     setWaitingForFeedback(false); // Завершаем ожидание ответа
@@ -80,6 +80,7 @@ function Chatbot() {
             {message.text}
             {message.sender === 'bot' && message.showFeedback && (
               <div className="feedback-buttons">
+                <p>Ваc устраивает ответ?</p>
                 <button
                   className={message.selectedFeedback === 'Да' ? 'selected' : ''}
                   onClick={() => handleFeedback(index, 'Да')}
@@ -92,7 +93,7 @@ function Chatbot() {
                   onClick={() => handleFeedback(index, 'Нет')}
                   disabled={message.feedbackGiven}
                 >
-                  Нет
+                  Нет, позови специалиста
                 </button>
               </div>
             )}
