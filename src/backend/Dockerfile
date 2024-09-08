@@ -4,7 +4,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "model_setup.py"] # Создание локальной модели в контейнере
+RUN python model_setup.py
 
 EXPOSE 8000
-CMD ["python", "main.py"] # Запуск сервера
+CMD ["python", "main.py"]

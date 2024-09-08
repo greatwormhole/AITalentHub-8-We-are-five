@@ -13,7 +13,7 @@ class QueryFinder:
         :param answer_corpus_base_path: Base path to the answer corpuses.
         :param closest_n: The number of closest matches to return.
         """
-        self.model = SentenceTransformer(model_path)
+        self.model = SentenceTransformer(model_path).to('cpu')
         self.embeddings_base_path = embeddings_base_path
         self.answer_corpus_base_path = answer_corpus_base_path
         self.closest_n = closest_n
@@ -28,7 +28,7 @@ class QueryFinder:
         if category == 'Другое':
             path = f'{self.embeddings_base_path}/query_corpus_embeddings.pt'
         else:
-            path = f'{self.embeddings_base_path}/query_corpus_embeddings_{category}.pt'
+            path = f'{self.embeddings_base_path}/query_corpus_embeddings_by_category/query_corpus_embeddings_{category}.pt'
         return torch.load(path, map_location=torch.device('cpu'))
 
     def _load_answer_corpus(self, category: str):
@@ -64,19 +64,3 @@ class QueryFinder:
         # Load the relevant answer corpus
         answer_corpus = self._load_answer_corpus(category)
         return answer_corpus[best_matches[1][0].item()]
-
-# Example usage
-categories_to_choose = ['ЛК', 'поддержка', 'табель', 'отпуск', 'удаленная работа', 'увольнение', 'моя карьера', 'БиР', 'Другое']
-model_path = '/content/all-mpnet-base-v2'
-embeddings_base_path = '/content'
-answer_corpus_base_path = '/content'
-
-query_finder = QueryFinder(model_path, embeddings_base_path, answer_corpus_base_path)
-
-# Sample query and category
-query = "как внести снилс в лк"
-category = "документооборот"
-
-# Find the best match
-best_answer = query_finder.find_query(query, category)
-print(best_answer)

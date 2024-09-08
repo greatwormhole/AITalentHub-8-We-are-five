@@ -1,9 +1,18 @@
-from os import environ
+import os
+import regex as re
 from uvicorn import Config
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 server_settings = Config(
     app='app:app',
-    host=environ['BACKEND_HOST'],
-    port=int(environ['BACKEND_PORT']),
+    host=os.environ['BACKEND_HOST'],
+    port=int(os.environ['BACKEND_PORT']),
     reload=True,
 )
+
+model_settings = {
+    'model_path': f'{BASE_DIR}/all-mpnet-base-v2',
+    'embeddings_base_path': f'{BASE_DIR}/ML/data',
+    'answer_corpus_base_path': f'{BASE_DIR}/ML/data',
+}
