@@ -1,13 +1,8 @@
-backendHost = "0.0.0.0";
-backendPort = 8000;
-backendURI = "http://" + backendHost + ":" + backendPort + "/";
-
 const conf = {
-    "backendHost": backendHost,
-    "backendPort": backendPort,
-    "backendURI": backendURI,
+    "backendURI": "http://" + process.env.REACT_APP_BACKEND_HOST + ":" + process.env.REACT_APP_BACKEND_PORT,
     "apiEndpointsMap": {
-        "sendMessage": "api/message",
+        "sendMessage": "/api/message",
+        "getCategories": "/api/get-categories"
     },
 }
 

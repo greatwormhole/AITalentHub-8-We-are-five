@@ -13,6 +13,6 @@ server_settings = Config(
 
 model_settings = {
     'model_path': f'{BASE_DIR}/all-mpnet-base-v2',
-    'embeddings_base_path': f'{BASE_DIR}/ML/data',
-    'answer_corpus_base_path': f'{BASE_DIR}/ML/data',
+    'embeddings_base_path': f'{BASE_DIR}/answer_generator/data',
+    'answer_corpus_base_path': f'{BASE_DIR}/answer_generator/data',
 }

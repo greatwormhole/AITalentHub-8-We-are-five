@@ -1,33 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Chatbot.css';
 import config from "../settings";
 
 function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [userInput, setUserInput] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null); // Выбранная категория
+  const [errorMessage, setErrorMessage] = useState(''); // Сообщение об ошибке
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const api = config["apiEndpointsMap"];
+  const backendURI = config['backendURI'];
+
+  useEffect(() => {
+    // Асинхронная функция для загрузки категорий
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(backendURI + api['getCategories']); // Замените на реальный эндпоинт
+        if (!response.ok) {
+          throw new Error('Ошибка при загрузке категорий');
+        }
+        const data = await response.json();
+        setCategories(data.body); // Предполагается, что API возвращает массив категорий
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [backendURI, api]);
 
   const handleSendMessage = async () => {
+    if (!selectedCategory) {
+      // Если категория не выбрана, показываем сообщение об ошибке
+      setErrorMessage('Пожалуйста, выберите категорию перед отправкой сообщения.');
+      return;
+    }
+
     if (userInput.trim() !== '') {
-      const newMessages = [...messages, { sender: 'user', text: userInput }];
+      const newMessages = [...messages, { sender: 'user', text: `${selectedCategory}: ${userInput}` }];
       setMessages(newMessages);
       setUserInput('');
-    
-      // Отправка сообщения на бэкенд
-      const response = await fetch(api['sendMessage'], {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({body: userInput }),
-      });
+      setSelectedCategory(null); // После отправки сообщения сбрасываем выбор категории
+      setErrorMessage(''); // Очищаем сообщение об ошибке после успешной отправки
 
-      const data = await response.json();
-      const botResponse = data.body;
+      try {
+        // Отправка сообщения на бэкенд вместе с выбранной категорией
+        const response = await fetch(backendURI + api['sendMessage'], {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            body: userInput,
+            category: selectedCategory // Передаем выбранную категорию на бэкенд
+          }),
+        });
 
-      // Добавление ответа бота в чат
-      setMessages([...newMessages, { sender: 'bot', text: botResponse }]);
+        const data = await response.json();
+        const botResponse = data.body;
+
+        // Добавление ответа бота в чат
+        setMessages([...newMessages, { sender: 'bot', text: botResponse }]);
+      } catch (err) {
+        setErrorMessage('Ошибка при отправке сообщения');
+      }
     }
   };
 
@@ -37,12 +78,15 @@ function Chatbot() {
         <h2>Чат-бот</h2>
       </div>
       <div className="chat-box">
+        {/* Сообщения */}
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
           </div>
         ))}
       </div>
+
+      {/* Поле ввода сообщения */}
       <div className="chat-input">
         <input
           type="text"
@@ -53,6 +97,39 @@ function Chatbot() {
         />
         <button onClick={handleSendMessage}>Отправить</button>
       </div>
+
+      {/* Список категорий в виде кнопок под полем ввода */}
+      <div className="category-buttons">
+        {categories.slice(0, 8).map((category, index) => (
+          <button
+            key={index}
+            className={`category-button ${selectedCategory === category ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedCategory(category);
+              setErrorMessage(''); // Сбрасываем сообщение об ошибке при выборе категории
+            }}
+          >
+            {category}
+          </button>
+        ))}
+        {categories.length > 8 && (
+          <button
+            className="category-button more"
+            onClick={() => {
+              // Показываем следующие 8 категорий
+              setCategories(prevCategories => [
+                ...prevCategories.slice(8),
+                ...prevCategories.slice(0, 8)
+              ]);
+            }}
+          >
+            Другое
+          </button>
+        )}
+      </div>
+
+      {/* Сообщение об ошибке при отсутствии выбранной категории */}
+      {errorMessage && <div className="notification">{errorMessage}</div>}
     </div>
   );
 }
