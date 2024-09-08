@@ -33,8 +33,9 @@ function Chatbot() {
 
   //   fetchCategories();
   // }, [backendURI, api]);
-
-  setCategories(['ЛК', 'поддержка', 'табель', 'отпуск', 'удаленная работа', 'увольнение', 'моя карьера', 'БиР', 'Другое'])
+  useEffect(() => {
+    setCategories(['ЛК', 'поддержка', 'табель', 'отпуск', 'удаленная работа', 'увольнение', 'моя карьера', 'БиР', 'Другое'])
+  }, [backendURI, api])
 
   const handleSendMessage = async () => {
     if (!selectedCategory) {
@@ -102,7 +103,7 @@ function Chatbot() {
 
       {/* Список категорий в виде кнопок под полем ввода */}
       <div className="category-buttons">
-        {categories.slice(0, 8).map((category, index) => (
+        {categories.map((category, index) => (
           <button
             key={index}
             className={`category-button ${selectedCategory === category ? 'active' : ''}`}
@@ -114,20 +115,6 @@ function Chatbot() {
             {category}
           </button>
         ))}
-        {categories.length > 8 && (
-          <button
-            className="category-button more"
-            onClick={() => {
-              // Показываем следующие 8 категорий
-              setCategories(prevCategories => [
-                ...prevCategories.slice(8),
-                ...prevCategories.slice(0, 8)
-              ]);
-            }}
-          >
-            Другое
-          </button>
-        )}
       </div>
 
       {/* Сообщение об ошибке при отсутствии выбранной категории */}
