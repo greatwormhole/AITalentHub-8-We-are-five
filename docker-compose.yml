@@ -5,13 +5,13 @@ services:
     build:
       context: ./src/backend
       dockerfile: Dockerfile
+    volumes:
+      - ./src/backend:/app
     env_file:
       - ./src/backend/.env
       - ./.env
     ports:
       - "$BACKEND_PORT:8000"
-    volumes:
-      - ./backend:/app
     networks:
       - web
 
@@ -22,6 +22,8 @@ services:
       args:
         HOST: $FRONTEND_HOST
         PORT: $FRONTEND_PORT
+    volumes:
+      - ./src/frontend:/app
     env_file:
       - ./src/frontend/.env
       - ./.env
