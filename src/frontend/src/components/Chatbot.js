@@ -19,8 +19,9 @@ function Chatbot() {
 
   const handleSendMessage = async () => {
     if (!selectedCategory) {
-      setErrorMessage('Пожалуйста, выберите категорию перед отправкой сообщения.');
-      return;
+      // setErrorMessage('Пожалуйста, выберите категорию перед отправкой сообщения.');
+      // return;
+      setSelectedCategory('Другое');
     }
 
     if (userInput.trim() !== '') {
