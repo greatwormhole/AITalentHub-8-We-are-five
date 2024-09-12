@@ -18,7 +18,7 @@ function Chatbot() {
   }, [backendURI, api]);
 
   const handleSendMessage = async () => {
-    const category = selectedCategory || 'Другое';
+    const category = selectedCategory || "Другое";
 
     if (userInput.trim() !== '') {
       const newMessages = [...messages, { sender: 'user', text: `${category}: ${userInput}` }];
@@ -41,9 +41,9 @@ function Chatbot() {
         const data = await response.json();
         const botResponse = data.body;
 
-        const shouldShowFeedback = botResponse !== 'Пожалуйста, переформулируйте свой вопрос';
+        const shouldShowFeedback = botResponse !== "Пожалуйста, переформулируйте свой вопрос";
 
-        setMessages([...newMessages, 
+        setMessages([...newMessages,
           { sender: 'bot', text: botResponse, showFeedback: shouldShowFeedback, feedbackGiven: false }
         ]);
 
@@ -53,6 +53,8 @@ function Chatbot() {
       } catch (err) {
         setErrorMessage('Ошибка при отправке сообщения');
       }
+
+      setSelectedCategory(null);
     }
   };
 
@@ -78,20 +80,18 @@ function Chatbot() {
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
-            {message.sender === 'bot' && message.showFeedback && (
+            {message.sender === 'bot' && message.showFeedback && !message.feedbackGiven && (
               <div className="feedback-buttons">
                 <p>Ваc устраивает ответ?</p>
                 <button
                   className={message.selectedFeedback === 'Да' ? 'selected' : ''}
                   onClick={() => handleFeedback(index, 'Да')}
-                  disabled={message.feedbackGiven}
                 >
                   Да
                 </button>
                 <button
                   className={message.selectedFeedback === 'Нет' ? 'selected' : ''}
                   onClick={() => handleFeedback(index, 'Нет')}
-                  disabled={message.feedbackGiven}
                 >
                   Нет, позови специалиста
                 </button>
@@ -102,18 +102,14 @@ function Chatbot() {
       </div>
 
       <div className="chat-input">
-        {!waitingForFeedback && (
-          <>
-            <input
-              type="text"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder="Введите свой вопрос..."
-            />
-            <button onClick={handleSendMessage}>Отправить</button>
-          </>
-        )}
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          placeholder="Введите свой вопрос..."
+        />
+        <button onClick={handleSendMessage}>Отправить</button>
       </div>
 
       <div className="category-buttons">
@@ -136,4 +132,4 @@ function Chatbot() {
   );
 }
 
-export default Chatbot; 
+export default Chatbot;
