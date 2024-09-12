@@ -41,15 +41,18 @@ function Chatbot() {
         const data = await response.json();
         const botResponse = data.body;
 
+        const shouldShowFeedback = botResponse !== 'Пожалуйста, переформулируйте свой вопрос';
+
         setMessages([...newMessages, 
-          { sender: 'bot', text: botResponse, showFeedback: true, feedbackGiven: false }
+          { sender: 'bot', text: botResponse, showFeedback: shouldShowFeedback, feedbackGiven: false }
         ]);
-        setWaitingForFeedback(true);
+
+        if (shouldShowFeedback) {
+          setWaitingForFeedback(true);
+        }
       } catch (err) {
         setErrorMessage('Ошибка при отправке сообщения');
       }
-
-      setSelectedCategory(null);
     }
   };
 
@@ -133,4 +136,4 @@ function Chatbot() {
   );
 }
 
-export default Chatbot;
+export default Chatbot; 
