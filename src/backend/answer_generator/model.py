@@ -60,6 +60,11 @@ class QueryFinder:
         # Compute cosine similarity between the query and the corpus
         distances = util.pytorch_cos_sim(query_embedding, query_corpus_embeddings)[0]
         best_matches = distances.topk(self.closest_n)
+        
+        # Filter
+        distance = best_matches[0][0].item()
+        if distance < 0.5:
+            return('Пожалуйста, переформулируйте свой вопрос')
 
         # Load the relevant answer corpus
         answer_corpus = self._load_answer_corpus(category)
