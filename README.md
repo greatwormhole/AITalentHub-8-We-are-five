@@ -1,16 +1,16 @@
-# Чат-бот AI Talent Hub
+# Чат-бот **AI Talent Hub**
 
 ## Использованные технологии
 
-- **Front-end:**
+- **Frontend:**
   - React.js
 
-- **Back-end:**
+- **Backend:**
   - FastAPI
 
 ## Установка
 
-To set up the project locally, follow these steps:
+Чтобы установить проект необходимо:
 
 1. **Клонировать репозиторий:**
 
@@ -25,16 +25,17 @@ To set up the project locally, follow these steps:
     cd AITalentHub-8-We-are-five
     ```
 
-    Опционально изменить переменные окружения в файлах ```docker.env```, ```src/backend/.env/``` или ```src/frontend/.env```
+    Опционально изменить переменные окружения в файлах ```.env```, ```src/backend/.env/``` или ```src/frontend/.env```
+    Для корректной работы следует вместо ```BACKEND_HOST``` и ```FRONTEND_HOST``` в файле .env выставить значения IP адресов своего сервера
 
 3. **Запустить приложение:**
     ```bash
-    bash lauch.sh
+    sudo bash launch.sh
     ```
 
 ## Использование
 
 <div style="text-align: center;">
-  <img src="./media/frontend.png" alt="Мое изображение" style="height: 400px; width: 600px">
-  <img src="./media/backend_docs.png" alt="Мое изображение" style="height: 400px; width: 800px">
+  <img src="./media/frontend.png" alt="Мое изображение" style="height: 400px; width: 600px; text-align: center;">
+  <img src="./media/backend_docs.png" alt="Мое изображение" style="height: 400px; width: 800px; text-align: center;">
 </div>

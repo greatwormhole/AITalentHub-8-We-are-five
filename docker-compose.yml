@@ -5,6 +5,7 @@ services:
     build:
       context: ./src/backend
       dockerfile: Dockerfile
+    container_name: AIbackend
     volumes:
       - ./src/backend:/app
     env_file:
@@ -22,6 +23,9 @@ services:
       args:
         HOST: $FRONTEND_HOST
         PORT: $FRONTEND_PORT
+        BACKEND_HOST: $BACKEND_HOST
+        BACKEND_PORT: $BACKEND_PORT
+    container_name: AIfrontend
     volumes:
       - ./src/frontend:/app
     env_file:

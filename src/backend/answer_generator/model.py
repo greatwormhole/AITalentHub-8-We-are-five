@@ -63,7 +63,7 @@ class QueryFinder:
         
         # Filter
         distance = best_matches[0][0].item()
-        if distance < 0.7:
+        if distance < 0.85:
             return('Пожалуйста, переформулируйте свой вопрос')
 
         # Load the relevant answer corpus
