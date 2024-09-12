@@ -18,14 +18,10 @@ function Chatbot() {
   }, [backendURI, api]);
 
   const handleSendMessage = async () => {
-    if (!selectedCategory) {
-      // setErrorMessage('Пожалуйста, выберите категорию перед отправкой сообщения.');
-      // return;
-      setSelectedCategory('Другое');
-    }
+    const category = selectedCategory || 'Другое';
 
     if (userInput.trim() !== '') {
-      const newMessages = [...messages, { sender: 'user', text: `${selectedCategory}: ${userInput}` }];
+      const newMessages = [...messages, { sender: 'user', text: `${category}: ${userInput}` }];
       setMessages(newMessages);
       setUserInput('');
       setErrorMessage('');
@@ -38,7 +34,7 @@ function Chatbot() {
           },
           body: JSON.stringify({
             body: userInput,
-            category: selectedCategory,
+            category: category,
           }),
         });
 
@@ -60,14 +56,14 @@ function Chatbot() {
   const handleFeedback = (index, feedback) => {
     const newMessages = [...messages];
     newMessages[index].feedbackGiven = true;
-    newMessages[index].selectedFeedback = feedback; // Сохраняем выбор пользователя
+    newMessages[index].selectedFeedback = feedback;
     setMessages(newMessages);
 
     if (feedback === 'Нет') {
       setMessages([...newMessages, { sender: 'bot', text: 'Извините, что ответ Вас не устроил' }]);
     }
 
-    setWaitingForFeedback(false); // Завершаем ожидание ответа
+    setWaitingForFeedback(false);
   };
 
   return (
