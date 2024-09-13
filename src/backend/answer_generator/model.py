@@ -62,8 +62,8 @@ class QueryFinder:
         best_matches = distances.topk(self.closest_n)
         
         # Filter
-        distance = best_matches[0][0].item()
-        if distance < 0.85:
+        distance = best_matches[0][0].item ()
+        if distance < 0.75:
             return('Пожалуйста, переформулируйте свой вопрос')
 
         # Load the relevant answer corpus

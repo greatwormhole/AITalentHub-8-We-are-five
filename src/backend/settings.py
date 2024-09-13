@@ -4,7 +4,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 server_settings = {
     'app': 'app:app',
-    'host': os.environ['BACKEND_HOST'],
+    'host': '0.0.0.0',
     'port': int(os.environ['BACKEND_PORT']),
     'reload': True,
 }

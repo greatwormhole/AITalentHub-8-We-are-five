@@ -5,6 +5,8 @@ services:
     build:
       context: ./src/backend
       dockerfile: Dockerfile
+      args:
+        BACKEND_PORT: $BACKEND_PORT
     container_name: AIbackend
     volumes:
       - ./src/backend:/app
@@ -12,7 +14,7 @@ services:
       - ./src/backend/.env
       - ./.env
     ports:
-      - "$BACKEND_PORT:8000"
+      - "$BACKEND_PORT:$BACKEND_PORT"
     networks:
       - web
 
@@ -21,10 +23,9 @@ services:
       context: ./src/frontend
       dockerfile: Dockerfile
       args:
-        HOST: $FRONTEND_HOST
-        PORT: $FRONTEND_PORT
-        BACKEND_HOST: $BACKEND_HOST
-        BACKEND_PORT: $BACKEND_PORT
+        FRONTEND_PORT: $FRONTEND_PORT
+        REACT_APP_BACKEND_HOST: $HOST
+        REACT_APP_BACKEND_PORT: $BACKEND_PORT
     container_name: AIfrontend
     volumes:
       - ./src/frontend:/app
