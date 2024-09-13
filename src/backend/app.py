@@ -2,9 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from schema.models import Message
-from answer_generator.model import QueryFinder
-from settings import model_settings
+from routers.answer_generation_api import router as answer_router
 
 app = FastAPI()
 
@@ -19,25 +17,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post(
-    '/api/message/',
-)
-async def handle_message(msg: Message):
-    
-    model = QueryFinder(**model_settings)
-    
-    return {
-        "body": model.find_query(msg.body, msg.category),
-    }
-
-@app.get(
-    '/api/get-categories'
-)
-async def get_categories():
-    
-    with open('./answer_generator/available_categories.txt') as f:
-        categories = list(map(lambda el: el.strip(), f.readlines()))
-        
-    return {
-        'body': categories
-    }
+app.include_router(answer_router)
