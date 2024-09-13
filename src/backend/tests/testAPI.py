@@ -1,20 +1,41 @@
-import unittest
-import requests
+import sys
+import os
+import pytest
+from fastapi.testclient import TestClient
+from unittest.mock import patch
 
-from settings import server_settings
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from app import app
 
-class TestMessageEndpoint(unittest.TestCase):
+client = TestClient(app)
 
-    endpoint = 'message'
-    
-    def setUp(self):
-        self.url = 'http://' + server_settings.host + ':' + str(server_settings.port) + '/' + self.endpoint
-        self.headers = {"Content-Type": "application/json"}
-        self.payload = {
-            "body": "Dummy",
+mock_categories = ['ЛК', 'поддержка', 'табель', 'отпуск']
+
+@pytest.fixture
+def mock_query_finder():
+    with patch('main.QueryFinder') as MockQueryFinder:
+        instance = MockQueryFinder.return_value
+        instance.find_query.return_value = "Mocked response"
+        yield instance
+
+def test_handle_message(mock_query_finder):
+    response = client.post(
+        "/api/message/",
+        json={
+            "body": "Пример вопроса",
+            "category": "поддержка"
         }
+    )
+    assert response.status_code == 200
+    assert response.json() == {"body": "Mocked response"}
+    mock_query_finder.find_query.assert_called_once_with("Пример вопроса", "поддержка")
 
-    def test_post_msg(self):
-        response = requests.post(self.url, json=self.payload, headers=self.headers)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), self.payload)
+@pytest.fixture
+def mock_open_categories_file():
+    with patch("builtins.open", pytest.mock_open(read_data="ЛК\nподдержка\nтабель\nотпуск")):
+        yield
+
+def test_get_categories(mock_open_categories_file):
+    response = client.get("/api/get-categories")
+    assert response.status_code == 200
+    assert response.json() == {"body": mock_categories}
