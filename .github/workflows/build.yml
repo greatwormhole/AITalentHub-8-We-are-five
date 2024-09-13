@@ -68,6 +68,7 @@ jobs:
           echo BACKEND_PORT=${{ vars.BACKEND_PORT }} >> .env
           echo FRONTEND_PORT=${{ vars.FRONTEND_PORT }} >> .env
 
+          sudo docker-compose down
           sudo docker-compose -f docker-compose.yml --env-file .env up -d --build
 
           sudo docker image prune -f
