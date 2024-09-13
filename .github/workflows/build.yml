@@ -1,0 +1,75 @@
+name: CI/CD for application
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  # build:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+
+  #   - name: Set up Docker Buildx
+  #     uses: docker/setup-buildx-action@v2
+
+  #   - name: Build backend Docker image
+  #     run: |
+  #       BACKEND_PORT=${{ vars.BACKEND_PORT }} docker build ./src/backend -t persons-service:latest
+    
+  # TODO: Дописать интеграционные тесты приложения
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+    
+  deploy:
+    # needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install SSH Key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        known_hosts: ${{ secrets.SERVER_IP }}
+
+    - name: Deploy to server
+      run: |
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+
+          sudo apt-get install docker -y
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+          PROJECT_DIR=~/AITalentHub-8-We-are-five
+
+          if [ ! -d "$PROJECT_DIR/.git" ]; then
+            git clone https://github.com/greatwormhole/lab1-template.git "$PROJECT_DIR"
+            cd "$PROJECT_DIR"
+          else
+            cd "$PROJECT_DIR"
+            git reset --hard origin/master
+            git pull origin master
+          fi
+
+          rm .env
+
+          echo HOST=${{ secrets.SERVER_IP }} >> .env
+          echo BACKEND_PORT=${{ vars.BACKEND_PORT }} >> .env
+          echo FRONTEND_PORT=${{ vars.FRONTEND_PORT }} >> .env
+
+          sudo docker-compose -f docker-compose.yml --env-file .env up -d --build
+
+          sudo docker image prune -f
+          sudo docker container prune -f
+        EOF
