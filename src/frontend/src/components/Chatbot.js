@@ -41,13 +41,14 @@ function Chatbot() {
         const data = await response.json();
         const botResponse = data.body;
 
-        const shouldShowFeedback = botResponse !== "Пожалуйста, переформулируйте свой вопрос";
+        // Check if the response is asking to reformulate the question
+        const isReformulateRequest = botResponse === "Пожалуйста, переформулируйте свой вопрос";
 
         setMessages([...newMessages,
-          { sender: 'bot', text: botResponse, showFeedback: shouldShowFeedback, feedbackGiven: false }
+          { sender: 'bot', text: botResponse, showSpecialistButton: isReformulateRequest, showFeedbackButtons: !isReformulateRequest, feedbackGiven: false }
         ]);
 
-        if (shouldShowFeedback) {
+        if (!isReformulateRequest) {
           setWaitingForFeedback(true);
         }
       } catch (err) {
@@ -65,11 +66,20 @@ function Chatbot() {
     setMessages(newMessages);
 
     if (feedback === 'Нет') {
-      setMessages([...newMessages, { sender: 'bot', text: 'Извините, что ответ Вас не устроил' }]);
+      setMessages([...newMessages, { sender: 'bot', text: 'Извините, что ответ Вас не устроил. Специалист скоро с Вами свяжется.' }]);
     }
 
     setWaitingForFeedback(false);
   };
+
+  const handleSpecialistRequest = (index) => {
+    const newMessages = [...messages];
+    newMessages[index].feedbackGiven = true;
+    setMessages([...newMessages, { sender: 'bot', text: 'Специалист скоро с Вами свяжется.' }]);
+    setWaitingForFeedback(false);
+  };
+
+  const messagesToHideFeedback = ["Извините, что ответ Вас не устроил. Специалист скоро с Вами свяжется.", "Специалист скоро с Вами свяжется."];
 
   return (
     <div className="chat-container">
@@ -80,21 +90,29 @@ function Chatbot() {
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
             {message.text}
-            {message.sender === 'bot' && message.showFeedback && !message.feedbackGiven && (
+            {message.sender === 'bot' && !message.feedbackGiven && !messagesToHideFeedback.includes(message.text) && (
               <div className="feedback-buttons">
-                <p>Ваc устраивает ответ?</p>
-                <button
-                  className={message.selectedFeedback === 'Да' ? 'selected' : ''}
-                  onClick={() => handleFeedback(index, 'Да')}
-                >
-                  Да
-                </button>
-                <button
-                  className={message.selectedFeedback === 'Нет' ? 'selected' : ''}
-                  onClick={() => handleFeedback(index, 'Нет')}
-                >
-                  Нет, позови специалиста
-                </button>
+                {message.showSpecialistButton ? (
+                  <button onClick={() => handleSpecialistRequest(index)}>
+                    Вызвать специалиста
+                  </button>
+                ) : (
+                  <>
+                    <p>Ваc устраивает ответ?</p>
+                    <button
+                      className={message.selectedFeedback === 'Да' ? 'selected' : ''}
+                      onClick={() => handleFeedback(index, 'Да')}
+                    >
+                      Да
+                    </button>
+                    <button
+                      className={message.selectedFeedback === 'Нет' ? 'selected' : ''}
+                      onClick={() => handleFeedback(index, 'Нет')}
+                    >
+                      Нет, позови специалиста
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
